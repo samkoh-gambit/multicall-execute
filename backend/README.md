@@ -61,18 +61,14 @@ This script will:
 - Use environment variables for all sensitive data.
 - For production, use a secure key management solution.
 
-```
-node read.js
-```
+---
 
-Write Function Contract
+## Running the Backend as an API Server
 
-```
-node write.js
-```
+You can also run the backend as an Express API server. This is useful for local development or when you want to expose API endpoints for the frontend to consume.
 
-Run the execute script
+Start the backend API server with:
 
-```
-node execute.js
+```sh
+node server.js
 ```
