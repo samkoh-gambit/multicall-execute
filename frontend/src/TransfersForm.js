@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const blockExplorerBase = process.env.REACT_APP_BLOCK_EXPLORER_URL || 'https://amoy.polygonscan.com/tx/';
-const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000/api/execute';
+// const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4000/api/execute';
+const apiUrl = '/api/execute';
 
 function TransfersForm() {
   const [transfers, setTransfers] = useState([{ from: '', to: '', amount: '' }]);
