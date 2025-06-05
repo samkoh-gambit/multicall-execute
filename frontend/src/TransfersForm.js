@@ -5,8 +5,10 @@ const blockExplorerBase = process.env.REACT_APP_BLOCK_EXPLORER_URL || 'https://a
 // const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4001/api/execute';
 const apiUrl = '/api/execute';
 
+const DEFAULT_FROM = process.env.REACT_APP_DEFAULT_FROM || '0x44b2b682507c75a0B6129a6CaC518A6098ACEfCC';
+
 function TransfersForm() {
-  const [transfers, setTransfers] = useState([{ from: '', to: '', amount: '' }]);
+  const [transfers, setTransfers] = useState([{ from: DEFAULT_FROM, to: '', amount: '' }]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -17,7 +19,7 @@ function TransfersForm() {
     setTransfers(newTransfers);
   };
 
-  const handleAdd = () => setTransfers([...transfers, { from: '', to: '', amount: '' }]);
+  const handleAdd = () => setTransfers([...transfers, { from: DEFAULT_FROM, to: '', amount: '' }]);
   const handleRemove = (idx) => setTransfers(transfers.filter((_, i) => i !== idx));
 
   const handleSubmit = async (e) => {
