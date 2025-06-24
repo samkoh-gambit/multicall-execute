@@ -1,17 +1,27 @@
 require("dotenv").config();
 const ethers = require("ethers");
 
+// Chain configuration mapping
+const CHAIN_CONFIG = {
+  'polygon-amoy': {
+    rpcUrl: process.env.POLYGON_AMOY_RPC_URL,
+    tokenContract: process.env.POLYGON_AMOY_TOKEN_CONTRACT,
+    multicallAddress: process.env.POLYGON_AMOY_MULTICALL_ADDRESS,
+    privateKey: process.env.POLYGON_AMOY_PRIVATE_KEY,
+  },
+  'eth-sepolia': {
+    rpcUrl: process.env.ETH_SEPOLIA_RPC_URL,
+    tokenContract: process.env.ETH_SEPOLIA_TOKEN_CONTRACT,
+    multicallAddress: process.env.ETH_SEPOLIA_MULTICALL_ADDRESS,
+    privateKey: process.env.ETH_SEPOLIA_PRIVATE_KEY,
+  },
+};
+
 // ABIs
 const erc20Abi = [
   "function transferFrom(address from, address to, uint256 amount)"
 ];
 const erc20Interface = new ethers.Interface(erc20Abi);
-
-// ERC-20 Token contract address from env
-const tokenContract = process.env.TOKEN_CONTRACT;
-
-// MulticallBN contract address from env
-const multicallAddress = process.env.MULTICALL_ADDRESS;
 
 // MulticallBN ABI (from your provided ABI)
 const multicallAbi = [
@@ -37,14 +47,19 @@ const multicallAbi = [
   }
 ];
 
-// Set up provider and signer from env
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+module.exports = async function execute(transfers, chain) {
+  if (!chain || !CHAIN_CONFIG[chain]) {
+    throw new Error('Invalid or missing chain parameter');
+  }
+  const config = CHAIN_CONFIG[chain];
 
-// Connect to the MulticallBN contract
-const multicallContract = new ethers.Contract(multicallAddress, multicallAbi, signer);
+  // Set up provider and signer from config
+  const provider = new ethers.JsonRpcProvider(config.rpcUrl);
+  const signer = new ethers.Wallet(config.privateKey, provider);
 
-module.exports = async function execute(transfers) {
+  // Connect to the MulticallBN contract
+  const multicallContract = new ethers.Contract(config.multicallAddress, multicallAbi, signer);
+
   // Validate addresses
   for (const t of transfers) {
     if (!ethers.isAddress(t.from)) {
@@ -57,7 +72,7 @@ module.exports = async function execute(transfers) {
 
   // Build aggregate call from user-provided transfers
   const calls = transfers.map(({ from, to, amount }) => ({
-    target: tokenContract,
+    target: config.tokenContract,
     callData: erc20Interface.encodeFunctionData(
       "transferFrom",
       [from, to, ethers.parseUnits(amount, 18)]

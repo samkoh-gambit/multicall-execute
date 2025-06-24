@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const blockExplorerBase = process.env.REACT_APP_BLOCK_EXPLORER_URL || 'https://amoy.polygonscan.com/tx/';
+const blockExplorerBases = {
+  'polygon-amoy': process.env.REACT_APP_POLYGON_AMOY_BLOCK_EXPLORER_URL || 'https://amoy.polygonscan.com/tx/',
+  'eth-sepolia': process.env.REACT_APP_ETH_SEPOLIA_BLOCK_EXPLORER_URL || 'https://sepolia.etherscan.io/tx/',
+};
+
 // const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4001/api/execute';
 const apiUrl = '/api/execute';
 
-const DEFAULT_FROM = process.env.REACT_APP_DEFAULT_FROM || '0x44b2b682507c75a0B6129a6CaC518A6098ACEfCC';
+const CHAIN_CONFIG = {
+  'polygon-amoy': {
+    defaultFrom: process.env.REACT_APP_POLYGON_AMOY_DEFAULT_FROM || '',
+  },
+  'eth-sepolia': {
+    defaultFrom: process.env.REACT_APP_ETH_SEPOLIA_DEFAULT_FROM || '',
+  },
+};
 
 function TransfersForm() {
-  const [transfers, setTransfers] = useState([{ from: DEFAULT_FROM, to: '', amount: '' }]);
+  const [chain, setChain] = useState('polygon-amoy');
+  const [transfers, setTransfers] = useState([{ from: CHAIN_CONFIG['polygon-amoy'].defaultFrom, to: '', amount: '' }]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -19,8 +31,16 @@ function TransfersForm() {
     setTransfers(newTransfers);
   };
 
-  const handleAdd = () => setTransfers([...transfers, { from: DEFAULT_FROM, to: '', amount: '' }]);
+  const handleAdd = () => setTransfers([...transfers, { from: CHAIN_CONFIG[chain].defaultFrom, to: '', amount: '' }]);
   const handleRemove = (idx) => setTransfers(transfers.filter((_, i) => i !== idx));
+
+  const handleChainChange = (e) => {
+    const selectedChain = e.target.value;
+    setChain(selectedChain);
+    setTransfers(transfers.map(t => ({ ...t, from: CHAIN_CONFIG[selectedChain].defaultFrom })));
+    setResult(null);
+    setError(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +54,7 @@ function TransfersForm() {
     }));
 
     try {
-      const res = await axios.post(apiUrl, { transfers: payload });
+      const res = await axios.post(apiUrl, { transfers: payload, chain });
       setResult(res.data);
     } catch (err) {
       setError(err.response?.data?.error || err.message);
@@ -45,6 +65,21 @@ function TransfersForm() {
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <h2 style={{ margin: 0, fontSize: '1.7rem', color: '#2563eb', fontWeight: 700, letterSpacing: '0.01em' }}>Batch ERC-20 Transfers</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <label htmlFor="chain-select" style={{ fontWeight: 1000, color: '#374151' }}>Select Chain:</label>
+          <select
+            id="chain-select"
+            value={chain}
+            onChange={handleChainChange}
+            style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '1rem', background: '#f9fafb', color: '#2563eb', fontWeight: 600 }}
+          >
+            <option value="polygon-amoy">Polygon Amoy</option>
+            <option value="eth-sepolia">Ethereum Sepolia</option>
+          </select>
+        </div>
+      </div>
       {transfers.map((t, idx) => (
         <div key={idx} className="transfer-row" style={{ display: 'flex', flexDirection: 'row', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
           <input
@@ -93,7 +128,7 @@ function TransfersForm() {
           <div>
             Txn Hash:{' '}
             <a
-              href={`${blockExplorerBase}${result.result.hash}`}
+              href={`${blockExplorerBases[chain]}${result.result.hash}`}
               target="_blank"
               rel="noopener noreferrer"
             >

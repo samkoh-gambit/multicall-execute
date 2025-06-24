@@ -11,8 +11,9 @@ app.post('/api/execute', async (req, res) => {
     console.log('Received transfers:', req.body.transfers);
     try {
       const transfers = req.body.transfers;
+      const chain = req.body.chain; 
       console.log('Calling execute...');
-      const result = await execute(transfers);
+      const result = await execute(transfers, chain); 
       console.log('Execute finished:', result);
       res.json({ success: true, result });
     } catch (err) {
