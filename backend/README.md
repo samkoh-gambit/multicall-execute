@@ -72,3 +72,9 @@ Start the backend API server with:
 ```sh
 node server.js
 ```
+
+## Execute okk approve
+
+```sh
+node execute-okk-approve.js
+```

@@ -108,3 +108,7 @@ a {
   padding: 32px;
   box-sizing: border-box;
 }
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}

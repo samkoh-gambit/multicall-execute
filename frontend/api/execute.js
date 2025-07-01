@@ -14,6 +14,12 @@ const CHAIN_CONFIG = {
     multicallAddress: process.env.ETH_SEPOLIA_MULTICALL_ADDRESS,
     privateKey: process.env.ETH_SEPOLIA_PRIVATE_KEY,
   },
+  'polygon-mainnet': {
+    rpcUrl: process.env.POLYGON_RPC_URL,
+    tokenContract: process.env.POLYGON_TOKEN_CONTRACT,
+    multicallAddress: process.env.POLYGON_MULTICALL_ADDRESS,
+    privateKey: process.env.POLYGON_PRIVATE_KEY,
+  },
 };
 
 // Vercel serverless function: /api/execute
