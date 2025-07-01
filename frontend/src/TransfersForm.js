@@ -4,6 +4,7 @@ import axios from 'axios';
 const blockExplorerBases = {
   'polygon-amoy': process.env.REACT_APP_POLYGON_AMOY_BLOCK_EXPLORER_URL || 'https://amoy.polygonscan.com/tx/',
   'eth-sepolia': process.env.REACT_APP_ETH_SEPOLIA_BLOCK_EXPLORER_URL || 'https://sepolia.etherscan.io/tx/',
+  'polygon-mainnet': process.env.REACT_APP_POLYGON_MAINNET_BLOCK_EXPLORER_URL || 'https://polygonscan.com/tx/',
 };
 
 // const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:4001/api/execute';
@@ -15,6 +16,9 @@ const CHAIN_CONFIG = {
   },
   'eth-sepolia': {
     defaultFrom: process.env.REACT_APP_ETH_SEPOLIA_DEFAULT_FROM || '',
+  },
+  'polygon-mainnet': {
+    defaultFrom: process.env.REACT_APP_POLYGON_DEFAULT_FROM || '',
   },
 };
 
@@ -48,6 +52,16 @@ function TransfersForm() {
     setResult(null);
     setError(null);
 
+    if (chain === 'polygon-mainnet') {
+      const confirmed = window.confirm(
+        'You are about to submit a batch transfer on POLYGON MAINNET. Are you sure you want to proceed?'
+      );
+      if (!confirmed) {
+        setLoading(false);
+        return;
+      }
+    }
+
     const payload = transfers.map(t => ({
       ...t,
       amount: t.amount.toString()
@@ -66,7 +80,28 @@ function TransfersForm() {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-        <h2 style={{ margin: 0, fontSize: '1.7rem', color: '#2563eb', fontWeight: 700, letterSpacing: '0.01em' }}>Batch ERC-20 Transfers</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <h2 style={{ margin: 0, fontSize: '1.7rem', color: '#2563eb', fontWeight: 700, letterSpacing: '0.01em' }}>
+            Batch ERC-20 Transfers
+          </h2>
+          {chain === 'polygon-mainnet' && (
+            <span
+              className="mainnet-warning"
+              style={{
+                fontWeight: 900,
+                color: 'red',
+                marginLeft: '12px',
+                animation: 'blinker 1s linear infinite',
+                border: '2px solid red',
+                borderRadius: '6px',
+                padding: '4px 12px',
+                background: '#fff0f0'
+              }}
+            >
+              ⚠️ POLYGON MAINNET
+            </span>
+          )}
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <label htmlFor="chain-select" style={{ fontWeight: 1000, color: '#374151' }}>Select Chain:</label>
           <select
@@ -77,6 +112,7 @@ function TransfersForm() {
           >
             <option value="polygon-amoy">Polygon Amoy</option>
             <option value="eth-sepolia">Ethereum Sepolia</option>
+            <option value="polygon-mainnet">Polygon Mainnet</option>
           </select>
         </div>
       </div>
