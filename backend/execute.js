@@ -15,6 +15,12 @@ const CHAIN_CONFIG = {
     multicallAddress: process.env.ETH_SEPOLIA_MULTICALL_ADDRESS,
     privateKey: process.env.ETH_SEPOLIA_PRIVATE_KEY,
   },
+  'bsc-testnet': {
+    rpcUrl: process.env.BSC_TESTNET_RPC_URL,
+    tokenContract: process.env.BSC_TESTNET_TOKEN_CONTRACT,
+    multicallAddress: process.env.BSC_TESTNET_MULTICALL_ADDRESS,
+    privateKey: process.env.BSC_TESTNET_PRIVATE_KEY,
+  },
   'polygon-mainnet': {
     rpcUrl: process.env.POLYGON_RPC_URL,
     tokenContract: process.env.POLYGON_TOKEN_CONTRACT,

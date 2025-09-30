@@ -4,6 +4,7 @@ import axios from 'axios';
 const blockExplorerBases = {
   'polygon-amoy': process.env.REACT_APP_POLYGON_AMOY_BLOCK_EXPLORER_URL || 'https://amoy.polygonscan.com/tx/',
   'eth-sepolia': process.env.REACT_APP_ETH_SEPOLIA_BLOCK_EXPLORER_URL || 'https://sepolia.etherscan.io/tx/',
+  'bsc-testnet': process.env.REACT_APP_BSC_TESTNET_BLOCK_EXPLORER_URL || 'https://testnet.bscscan.com/tx/',
   'polygon-mainnet': process.env.REACT_APP_POLYGON_MAINNET_BLOCK_EXPLORER_URL || 'https://polygonscan.com/tx/',
 };
 
@@ -16,6 +17,9 @@ const CHAIN_CONFIG = {
   },
   'eth-sepolia': {
     defaultFrom: process.env.REACT_APP_ETH_SEPOLIA_DEFAULT_FROM || '',
+  },
+  'bsc-testnet': {
+    defaultFrom: process.env.REACT_APP_BSC_TESTNET_DEFAULT_FROM || '',
   },
   'polygon-mainnet': {
     defaultFrom: process.env.REACT_APP_POLYGON_DEFAULT_FROM || '',
@@ -112,6 +116,7 @@ function TransfersForm() {
           >
             <option value="polygon-amoy">Polygon Amoy</option>
             <option value="eth-sepolia">Ethereum Sepolia</option>
+            <option value="bsc-testnet">BSC Testnet</option>
             <option value="polygon-mainnet">Polygon Mainnet</option>
           </select>
         </div>
