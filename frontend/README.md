@@ -2,6 +2,16 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Authentication
+
+This app now requires sign-in before using batch transfers.
+
+- `POST /api/login` validates `ADMIN_ID` and `ADMIN_PWD`.
+- `GET /api/check-auth` is used on page load to keep signed-in sessions.
+- `POST /api/logout` clears the session.
+
+For Vercel deployment, set `ADMIN_ID`, `ADMIN_PWD`, and `SESSION_SECRET` in the project environment variables.
+
 ## Available Scripts
 
 In the project directory, you can run:

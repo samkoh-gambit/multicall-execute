@@ -19,6 +19,9 @@ PRIVATE_KEY=your_private_key_here
 RPC_URL=your_rpc_url_here
 MULTICALL_ADDRESS=your_multicall_contract_address_here
 TOKEN_CONTRACT=your_erc20_token_contract_address_here
+ADMIN_ID=your_login_id_here
+ADMIN_PWD=your_login_password_here
+SESSION_SECRET=optional_custom_session_secret
 ```
 
 **Note:** Never commit your `.env` file or private keys to version control.
@@ -72,6 +75,14 @@ Start the backend API server with:
 ```sh
 node server.js
 ```
+
+### Authentication endpoints
+
+- `POST /api/login` with `{ "id": "...", "password": "..." }`
+- `GET /api/check-auth`
+- `POST /api/logout`
+
+`POST /api/execute` is protected and requires a valid authenticated session.
 
 ## Execute okk approve
 

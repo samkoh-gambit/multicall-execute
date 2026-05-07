@@ -1,4 +1,5 @@
 const { ethers } = require("ethers");
+const { requireAuth } = require('./auth');
 
 // Chain configuration mapping
 const CHAIN_CONFIG = {
@@ -30,6 +31,8 @@ const CHAIN_CONFIG = {
 
 // Vercel serverless function: /api/execute
 module.exports = async (req, res) => {
+  if (!requireAuth(req, res)) return;
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }

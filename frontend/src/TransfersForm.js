@@ -26,7 +26,7 @@ const CHAIN_CONFIG = {
   },
 };
 
-function TransfersForm() {
+function TransfersForm({ onSessionExpired }) {
   const [chain, setChain] = useState('polygon-amoy');
   const [transfers, setTransfers] = useState([{ from: CHAIN_CONFIG['polygon-amoy'].defaultFrom, to: '', amount: '' }]);
   const [loading, setLoading] = useState(false);
@@ -72,9 +72,13 @@ function TransfersForm() {
     }));
 
     try {
-      const res = await axios.post(apiUrl, { transfers: payload, chain });
+      const res = await axios.post(apiUrl, { transfers: payload, chain }, { withCredentials: true });
       setResult(res.data);
     } catch (err) {
+      if (err.response?.status === 401 && onSessionExpired) {
+        onSessionExpired();
+        return;
+      }
       setError(err.response?.data?.error || err.message);
     } finally {
       setLoading(false);
