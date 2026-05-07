@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { applyChainThemeToDocument, clearChainThemeFromDocument, getChainTheme } from './chainTheme';
 
 const blockExplorerBases = {
   'polygon-amoy': process.env.REACT_APP_POLYGON_AMOY_BLOCK_EXPLORER_URL || 'https://amoy.polygonscan.com/tx/',
@@ -32,6 +33,16 @@ function TransfersForm({ onSessionExpired }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+
+  const theme = getChainTheme(chain);
+
+  useEffect(() => {
+    applyChainThemeToDocument(chain);
+  }, [chain]);
+
+  useEffect(() => {
+    return () => clearChainThemeFromDocument();
+  }, []);
 
   const handleChange = (idx, field, value) => {
     const newTransfers = [...transfers];
@@ -89,7 +100,7 @@ function TransfersForm({ onSessionExpired }) {
     <form onSubmit={handleSubmit} className="form-container">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <h2 style={{ margin: 0, fontSize: '1.7rem', color: '#2563eb', fontWeight: 700, letterSpacing: '0.01em' }}>
+          <h2 style={{ margin: 0, fontSize: '1.7rem', color: theme.primary, fontWeight: 700, letterSpacing: '0.01em' }}>
             Batch ERC-20 Transfers
           </h2>
           {chain === 'polygon-mainnet' && (
@@ -111,12 +122,20 @@ function TransfersForm({ onSessionExpired }) {
           )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <label htmlFor="chain-select" style={{ fontWeight: 1000, color: '#374151' }}>Select Chain:</label>
+          <label htmlFor="chain-select" style={{ fontWeight: 1000, color: theme.primaryStrong }}>Select Chain:</label>
           <select
             id="chain-select"
             value={chain}
             onChange={handleChainChange}
-            style={{ padding: '8px 16px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '1rem', background: '#f9fafb', color: '#2563eb', fontWeight: 600 }}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '6px',
+              border: '1px solid #d1d5db',
+              fontSize: '1rem',
+              background: '#f9fafb',
+              color: theme.primaryStrong,
+              fontWeight: 600,
+            }}
           >
             <option value="polygon-amoy">Polygon Amoy</option>
             <option value="eth-sepolia">Ethereum Sepolia</option>
